@@ -2,7 +2,7 @@
 #define MAX_N 1000
 using namespace std;
 
-string filenamereference;
+string filenamereference, filenamedata;
 
 double reference[100*MAX_N], data[MAX_N];
 
@@ -13,18 +13,19 @@ double dist(double *a, double *b)
 {
    double d = 0.0;
    for(int i = 0; i < nobj; i++) d += pow(a[i]-b[i], p);
-   return pow(d, 1.0/p);
+   return d;
 }
-double GD(double *r, int size_r, double  *p, int size_p)
+double GD(double *r, int size_r, double  *point, int size_p)
 {
    double totaldist = 0.0;
    for(int i = 0; i < size_r; i++)
    {
       double mind = DBL_MAX;
-      for(int  j = 0; j < size_p; j++) mind = min(mind, dist(r + i*nobj, p + j*nobj));
+      for(int  j = 0; j < size_p; j++) mind = min(mind, dist(r + i*nobj, point + j*nobj));
+      cout << mind<<endl;
       totaldist +=mind;
    } 
-   return totaldist/size_r;
+   return pow((totaldist/size_r), 1.0/p);
 }
 void readpoints(double *points, int &size, FILE *fin)
 {
@@ -54,7 +55,8 @@ void readpoints(double *points, int &size, FILE *fin)
 }
 void readdata()
 {
-   FILE *fin_ref = fopen(filenamereference.c_str(), "r"), *fin_point = stdin;
+   //FILE *fin_ref = fopen(filenamereference.c_str(), "r"), *fin_point = stdin;
+   FILE *fin_ref = fopen(filenamereference.c_str(), "r"), *fin_point = fopen(filenamedata.c_str(), "r");
    readpoints(reference, nr, fin_ref);
    readpoints(data, nd, fin_point);
 }
@@ -67,6 +69,9 @@ void inputArg(int argc, char **argv)
          filenamereference = string(argv[++i]);
       else if(Terminal == "--p" )
          p = atof(argv[++i]);
+      else if(Terminal == "--d" )
+         filenamedata = string(argv[++i]);
+
    }
 }
 int main(int argc, char **argv)
