@@ -15,20 +15,21 @@ double dist(double *a, double *b)
    for(int i = 0; i < nobj; i++) d += pow(a[i]-b[i], p);
    return d;
 }
-double GD(double *r, int size_r, double  *point, int size_p)
+double GD(double *reference, int size_r, double  *point, int size_p)
 {
    double totaldist = 0.0;
    for(int i = 0; i < size_r; i++)
    {
       double mind = DBL_MAX;
-      for(int  j = 0; j < size_p; j++) mind = min(mind, dist(r + i*nobj, point + j*nobj));
-      cout << mind<<endl;
+      for(int  j = 0; j < size_p; j++)
+	 mind = min(mind, dist(reference + i*nobj, point + j*nobj));
       totaldist +=mind;
    } 
    return pow((totaldist/size_r), 1.0/p);
 }
 void readpoints(double *points, int &size, FILE *fin)
 {
+   nobj=0;
    int end=1, r=0, c=0;
    double num;
    char trimm[2];
@@ -42,6 +43,7 @@ void readpoints(double *points, int &size, FILE *fin)
         end = fscanf (fin, "%1[\r\n]", trimm);
 	c++;
       }while(!end);
+      nobj = max(nobj, c);
       //skip over successive empty lines
   do { 
        if(!fscanf (fin, "%1[#]%*[^\n\r]", trimm))
