@@ -5,7 +5,6 @@ using namespace std;
 string filenamereference, filenamedata;
 
 double reference[100*MAX_N], data[MAX_N], data_nd[MAX_N];
-int pc[MAX_N];
 int nobj, nd, nnd=0, nr;//objectives, data size, reference size
 double p = 2.0;
 
@@ -61,10 +60,10 @@ bool dominate(double *a, double *b)
    int cont = 0;
    for(int n=0; n<nobj; n++)
    {
-	if(b<a) return false;
-      if(a == b) cont++;
+      if(b[n]<a[n]) return false;
+      if(a[n] == b[n]) cont++;
    }
-    if( a == b) return false;
+    if(cont>0) return false;
    return dominated;
 }
 void take_non_dominated_set(double *points, int &n_points)
@@ -73,7 +72,7 @@ void take_non_dominated_set(double *points, int &n_points)
   {
      int cont = 0;
      for(int j = 0; j < n_points; j++)
-       if(dominate(points + nobj*j, points + nobj*i)) cont++;
+       if(i!=j && dominate(points + nobj*j, points + nobj*i)) cont++;
 
      if( cont == 0 )
      {
